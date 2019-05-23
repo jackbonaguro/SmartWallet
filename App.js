@@ -11,42 +11,45 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 //import Geth from 'react-native-geth';
 import './global';
 
-import Web3 from './web3.min';
+//import Web3 from './web3.min';
+import { ethers } from 'ethers';
 
 export default class App extends Component<Props> {
     constructor(props) {
         super(props);
-        //console.log('constructor');
+        let infuraProvider = new ethers.providers.InfuraProvider('rinkeby','5f3d75af05a14b1590570019d26675d6');
+        let httpProvider = new ethers.providers.JsonRpcProvider('https://rinkeby.infura.io/v3/5f3d75af05a14b1590570019d26675d6');
+        let provider = new ethers.providers.FallbackProvider([
+            infuraProvider,
+            httpProvider,
+        ]);
+        let wallet = ethers.Wallet.createRandom(ethers.utils.randomBytes(128));
+        wallet = wallet.connect(provider);
+        //provider.listAccounts().then(result => console.log(result));
+        console.log(wallet.address);
+        wallet.getBalance().then((balance) => {
+            //console.log
+            this.setState({
+                balance,
+            })
+        });
+
         this.state = {
-            latestBlockNumber: undefined,
-            netId: undefined,
-        };
-        this.web3 = new Web3();
-        this.web3.setProvider(new this.web3.providers.HttpProvider('https://rinkeby.infura.io/v3/5f3d75af05a14b1590570019d26675d6'));
-        this.web3.eth.getAccounts().then(console.log).catch(console.error);
-        this.web3.eth.getBlock('latest').then((block) => {
-            this.setState({
-                latestBlockNumber: block.number,
-            });
-        });
-        this.web3.eth.net.getId().then((netId) => {
-            this.setState({
-                netId,
-            });
-        });
-        let account = this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
-        console.log(account);
+            address: wallet.address,
+            balance: 0,
+        }
     }
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>React Native Web3 App</Text>
-          <Text style={styles.instructions}>{`Web3 Version: ${this.web3.version}`}</Text>
-          <Text style={styles.instructions}>{`Network: ${this.state.netId}`}</Text>
-          <Text style={styles.instructions}>{`Provider: ${this.web3.currentProvider.host}\n`}</Text>
-          <Text style={styles.instructions}>{`Account: ${this.web3.eth.defaultAccount || 'No Account'}`}</Text>
-          <Text style={styles.instructions}>{`Block #${this.state.latestBlockNumber}`}</Text>
+          {/*<Text style={styles.instructions}>{`Web3 Version: ${this.web3.version}`}</Text>*/}
+          {/*<Text style={styles.instructions}>{`Network: ${this.state.netId}`}</Text>*/}
+          {/*<Text style={styles.instructions}>{`Provider: ${this.web3.currentProvider.host}\n`}</Text>*/}
+          <Text style={styles.instructions}>{`Account:\t${this.state.address || 'No Account'}`}</Text>
+          <Text style={styles.instructions}>{`Balance:\t${this.state.balance}`}</Text>
+          {/*<Text style={styles.instructions}>{`Block #${this.state.latestBlockNumber}`}</Text>*/}
       </View>
     );
   }
