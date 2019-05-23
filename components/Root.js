@@ -14,7 +14,7 @@ import { NativeRouter, Route, Redirect, Switch } from 'react-router-native';
 import  { connect } from 'react-redux';
 import {
     setWalletAction,
-    setEncryptedWalletAction,
+    setPrivateKeyAction,
     statusLoadingAction,
     statusReduxingAction,
     statusIdleAction,
@@ -24,20 +24,23 @@ import {
 
 import Account from './Account';
 import Home from "./Home";
+import RNSecureKeyStore from "react-native-secure-key-store";
+import * as ethers from "ethers";
 
 class Root extends Component<Props> {
     componentDidMount() {
-        this.loadEncryptedWallet();
+        //this.loadEncryptedWallet();
+        this.loadWalletFromKeystore();
     }
 
     //TODO: Move wallet functions to own file since code is repeated here and in Root
     loadEncryptedWallet() {
         this.props.dispatch(statusLoadingAction());
-        AsyncStorage.getItem('encryptedWallet').then((encryptedWallet) => {
+        AsyncStorage.getItem('privateKey').then((encryptedWallet) => {
             if (encryptedWallet && encryptedWallet !== null) {
                 this.props.dispatch(statusReduxingAction());
-                //console.log(`Encrypted Wallet: ${JSON.stringify(encryptedWallet)}`);
-                this.props.dispatch(setEncryptedWalletAction(encryptedWallet));
+                //console.log(`Encrypted Wallet: ${JSON.stringify(privateKey)}`);
+                this.props.dispatch(setPrivateKeyAction(encryptedWallet));
                 this.props.dispatch(statusIdleAction());
 
                 //Must manually reconnect wallet to provider...
@@ -56,11 +59,31 @@ class Root extends Component<Props> {
         });
     }
 
+    loadWalletFromKeystore() {
+        RNSecureKeyStore.get("smartwallet").then((res) => {
+            console.log(res);
+            this.props.dispatch(setPrivateKeyAction(res));
+
+            //Must manually reconnect wallet to provider...
+            this.props.dispatch(walletLoadingAction());
+            let wallet = new ethers.Wallet(res, this.props.provider);
+            this.props.dispatch(setWalletAction(wallet));
+            this.props.dispatch(walletIdleAction());
+        }, (err) => {
+            if (err.code === 404) {
+                console.error('Attempted to load wallet but none found.');
+            }
+            else {
+                console.error(err);
+            }
+        });
+    }
+
     render() {
         return (
             <NativeRouter>
                 <Switch>
-                    <Redirect exact from="/" to="/account"/>
+                    <Redirect exact from="/" to="/home"/>
                     <Route path="/account" render={(props) => (
                         <Account
                             {...props}
@@ -85,11 +108,11 @@ const mapStateToProps = (state) => {
     let { walletReducer } = state;
     let {
         wallet,
-        encryptedWallet,
+        privateKey,
     } = walletReducer;
     return {
         wallet,
-        encryptedWallet,
+        privateKey,
     };
 };
 export default connect(

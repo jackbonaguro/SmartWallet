@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 
 const initialWalletState = {
     wallet: undefined,
-    encryptedWallet: '',
+    privateKey: '',
     status: 'Idle',
     walletStatus: 'Idle',
 };
@@ -15,10 +15,10 @@ function walletReducer(state = initialWalletState, action) {
                 wallet: action.wallet,
             };
         }
-        case 'setEncryptedWallet': {
+        case 'setPrivateKey': {
             return {
                 ...state,
-                encryptedWallet: action.encryptedWallet,
+                privateKey: action.privateKey,
             }
         }
         case 'statusSaving': {

@@ -7,10 +7,10 @@ function setWalletAction(wallet) {
     }
 }
 
-function setEncryptedWalletAction(encryptedWallet) {
+function setPrivateKeyAction(privateKey) {
     return {
-        type: 'setEncryptedWallet',
-        encryptedWallet,
+        type: 'setPrivateKey',
+        privateKey,
     }
 }
 
@@ -48,7 +48,7 @@ function walletLoadingAction() {
 
 export {
     setWalletAction,
-    setEncryptedWalletAction,
+    setPrivateKeyAction,
     statusSavingAction,
     statusLoadingAction,
     statusReduxingAction,

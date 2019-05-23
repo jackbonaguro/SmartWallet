@@ -61,6 +61,8 @@
 		3E816CC0900547858A2DEC50 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2BA3077509974E23AEC353D6 /* Octicons.ttf */; };
 		B20645723A2344D9B7760418 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03EC8267066F4E5E8AE902FD /* SimpleLineIcons.ttf */; };
 		4600DB529B3B4F3D9FF6E2BC /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C5A3E72BD9464ABA0907AA /* Zocial.ttf */; };
+		65851333ADEE4C2F8D375727 /* libRNSecureKeyStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADB80613C0E4F93B9DEEAA0 /* libRNSecureKeyStore.a */; };
+		59DE9DB7BF9B400EA0F2251B /* libRNSecureKeyStore-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A98892502046D18B43BFFA /* libRNSecureKeyStore-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -393,6 +395,9 @@
 		2BA3077509974E23AEC353D6 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		03EC8267066F4E5E8AE902FD /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F2C5A3E72BD9464ABA0907AA /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FDB88E4015C14A4391041351 /* RNSecureKeyStore.xcodeproj */ = {isa = PBXFileReference; name = "RNSecureKeyStore.xcodeproj"; path = "../node_modules/react-native-secure-key-store/ios/RNSecureKeyStore.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3ADB80613C0E4F93B9DEEAA0 /* libRNSecureKeyStore.a */ = {isa = PBXFileReference; name = "libRNSecureKeyStore.a"; path = "libRNSecureKeyStore.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		B0A98892502046D18B43BFFA /* libRNSecureKeyStore-tvOS.a */ = {isa = PBXFileReference; name = "libRNSecureKeyStore-tvOS.a"; path = "libRNSecureKeyStore-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -425,6 +430,7 @@
 				BF9789DF21FB49C08B08150A /* ReactNativeGethTests.xctest in Resources */,
 				7E03C122733A449A9A010963 /* libRNCAsyncStorage.a in Frameworks */,
 				6CA9708D0D4B4509AC40BE7E /* libRNVectorIcons.a in Frameworks */,
+				65851333ADEE4C2F8D375727 /* libRNSecureKeyStore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,6 +450,7 @@
 				F6E50D8960A04B33ACD432A4 /* ReactNativeGeth-tvOS.app in Resources */,
 				12E8A5792151405D835E7C5D /* ReactNativeGeth-tvOSTests.xctest in Resources */,
 				0A89C45D1386449CB0F0C90B /* libRNVectorIcons-tvOS.a in Frameworks */,
+				59DE9DB7BF9B400EA0F2251B /* libRNSecureKeyStore-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -620,6 +627,7 @@
 				E328EE961BB948A49936B165 /* ReactNativeGeth.xcodeproj */,
 				0236822066D24039890D1FC7 /* RNCAsyncStorage.xcodeproj */,
 				0C77EF8E170C484CA256382C /* RNVectorIcons.xcodeproj */,
+				FDB88E4015C14A4391041351 /* RNSecureKeyStore.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1293,12 +1301,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Debug;
@@ -1327,12 +1338,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Release;
@@ -1358,6 +1372,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Debug;
@@ -1382,6 +1397,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Release;
@@ -1418,12 +1434,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Debug;
@@ -1460,12 +1479,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Release;
@@ -1501,12 +1523,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Debug;
@@ -1542,12 +1567,15 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-geth\ios\ReactNativeGeth",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\react-native-secure-key-store\ios/**",
 				);
 			};
 			name = Release;

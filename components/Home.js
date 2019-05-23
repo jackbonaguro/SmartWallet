@@ -7,9 +7,10 @@
  */
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ethers from 'ethers';
 
 import  { connect } from 'react-redux';
 import { setWalletAction, setEncryptedWalletAction } from '../redux/actions';
@@ -19,50 +20,45 @@ class Home extends Component<Props> {
     constructor(props) {
         super(props);
 
-        //Small state for async data
-        if (this.props.wallet) {
-            this.props.wallet.getBalance().then((balance) => {
-                this.setState({
-                    balance,
-                })
-            });
-        }
+
         this.state = {
-            balance: 0,
+            network: '',
         }
     }
 
-    saveEncryptedWallet(encryptedWallet) {
-        console.log('Saving Wallet...');
-        AsyncStorage.setItem('encryptedWallet', encryptedWallet).then(() => {
-            console.log('Saved!');
-            this.props.dispatch(setEncryptedWalletAction(encryptedWallet));
-
-            this.props.ethers.Wallet.fromEncryptedJson(encryptedWallet, 'password').then((disconnectedWallet) => {
-                let wallet = disconnectedWallet.connect(this.provider);
-                //console.log(wallet.provider);
-                this.props.dispatch(setWalletAction(wallet));
-            });
-        }).catch((err) => {
-            console.error(err);
-        });
+    componentDidMount() {
+        this.props.provider.getNetwork().then((n) => {
+            this.setState({
+                network: n.name,
+            })
+        }).catch(console.error);
     }
 
     render() {
         return (
             <View style={styles.outer}>
                 <Nav history={this.props.history}/>
-                <View style={styles.container}>
-                    <Text style={styles.welcome}>Home</Text>
-                    {/*<Text style={styles.instructions}>{`Web3 Version: ${this.web3.version}`}</Text>*/}
-                    {/*<Text style={styles.instructions}>{`Network: ${this.state.netId}`}</Text>*/}
-                    {/*<Text style={styles.instructions}>{`Provider: ${this.web3.currentProvider.host}\n`}</Text>*/}
-                    <Text style={styles.instructions}>{`Account:\t${
-                        this.props.wallet ?
-                            this.props.wallet.address :
-                            'No Account'}`
-                    }</Text>
-                    {/*<Text style={styles.instructions}>{`Block #${this.state.latestBlockNumber}`}</Text>*/}
+                <View style={{
+                    justifyContent: 'center',
+                    flex: 1,
+                }}>
+                    {/*<ScrollView
+                        style={[styles.card, styles.shadow3]}
+                        contentContainerStyle={styles.container}
+                        showVerticalScrollIndicator={false}
+                    >*/}
+                    <View style={[styles.container, styles.card, styles.shadow3]}>
+                        <Text style={styles.welcome}>Home</Text>
+                        <Text style={styles.instructions}>{`Network: ${this.state.network}`}</Text>
+                        <Text style={styles.instructions}>{`Provider: ${JSON.stringify(this.props.provider._providers[0].connection.url, null, 4)}\n`}</Text>
+                        <Text style={styles.instructions}>{`Account:\t${
+                            this.props.wallet ?
+                                this.props.wallet.address :
+                                'No Account'}`
+                        }</Text>
+                        {/*<Text style={styles.instructions}>{`Block #${this.state.latestBlockNumber}`}</Text>*/}
+                    {/*</ScrollView>*/}
+                    </View>
                 </View>
             </View>
         );
@@ -71,6 +67,7 @@ class Home extends Component<Props> {
 
 const styles = StyleSheet.create({
     outer: {
+        flex: 1,
         justifyContent: 'flex-start',
         flexDirection: 'column',
         backgroundColor: 'white',
@@ -78,7 +75,12 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        padding: 10,
+    },
+    card: {
+        backgroundColor: 'white',
+        margin: 10,
+        borderRadius: 15,
     },
     welcome: {
         fontSize: 20,
@@ -90,17 +92,26 @@ const styles = StyleSheet.create({
         color: '#333333',
         marginBottom: 5,
     },
+    shadow3: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
+    },
 });
 
 const mapStateToProps = (state) => {
     let { walletReducer } = state;
     let {
         wallet,
-        encryptedWallet,
     } = walletReducer;
     return {
         wallet,
-        encryptedWallet,
     };
 };
 export default connect(
