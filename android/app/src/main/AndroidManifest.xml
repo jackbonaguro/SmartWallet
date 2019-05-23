@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.smartwallet">
+    package="com.smartwallet"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
