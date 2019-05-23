@@ -14,7 +14,45 @@ function setEncryptedWalletAction(encryptedWallet) {
     }
 }
 
+function statusSavingAction() {
+    return {
+        type: 'statusSaving',
+    }
+}
+function statusLoadingAction() {
+    return {
+        type: 'statusLoading',
+    }
+}
+function statusReduxingAction() {
+    return {
+        type: 'statusReduxing',
+    }
+}
+function statusIdleAction() {
+    return {
+        type: 'statusIdle',
+    }
+}
+
+function walletIdleAction() {
+    return {
+        type: 'walletIdle',
+    }
+}
+function walletLoadingAction() {
+    return {
+        type: 'walletLoading',
+    }
+}
+
 export {
     setWalletAction,
-    setEncryptedWalletAction
+    setEncryptedWalletAction,
+    statusSavingAction,
+    statusLoadingAction,
+    statusReduxingAction,
+    statusIdleAction,
+    walletLoadingAction,
+    walletIdleAction,
 }

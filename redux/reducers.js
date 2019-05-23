@@ -3,6 +3,8 @@ import { combineReducers } from "redux";
 const initialWalletState = {
     wallet: undefined,
     encryptedWallet: '',
+    status: 'Idle',
+    walletStatus: 'Idle',
 };
 
 function walletReducer(state = initialWalletState, action) {
@@ -17,6 +19,42 @@ function walletReducer(state = initialWalletState, action) {
             return {
                 ...state,
                 encryptedWallet: action.encryptedWallet,
+            }
+        }
+        case 'statusSaving': {
+            return {
+                ...state,
+                status: 'Saving',
+            }
+        }
+        case 'statusLoading': {
+            return {
+                ...state,
+                status: 'Loading',
+            }
+        }
+        case 'statusReduxing': {
+            return {
+                ...state,
+                status: 'Reduxing',
+            }
+        }
+        case 'statusIdle': {
+            return {
+                ...state,
+                status: 'Idle',
+            }
+        }
+        case 'walletIdle': {
+            return {
+                ...state,
+                walletStatus: 'Idle',
+            }
+        }
+        case 'walletLoading': {
+            return {
+                ...state,
+                walletStatus: 'Loading',
             }
         }
         default: {

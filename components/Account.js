@@ -9,9 +9,21 @@
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, Button } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import  { connect } from 'react-redux';
-import { setWalletAction, setEncryptedWalletAction } from '../redux/actions';
+import {
+    setWalletAction,
+    setEncryptedWalletAction,
+    statusSavingAction,
+    statusLoadingAction,
+    statusReduxingAction,
+    statusIdleAction,
+    walletLoadingAction,
+    walletIdleAction,
+} from '../redux/actions';
+
+import Nav from "./Nav";
 
 class Account extends Component<Props> {
     constructor(props) {
@@ -30,63 +42,50 @@ class Account extends Component<Props> {
         }
     }
 
-    componentDidMount() {
-        //Set up ethers and providers
-        //TODO: Allow provider configuration through app
-        let ethers = this.props.ethers;
-        let infuraProvider = new ethers.providers.InfuraProvider('rinkeby','5f3d75af05a14b1590570019d26675d6');
-        let httpProvider = new ethers.providers.JsonRpcProvider('https://rinkeby.infura.io/v3/5f3d75af05a14b1590570019d26675d6');
-        let provider = new ethers.providers.FallbackProvider([
-            infuraProvider,
-            httpProvider,
-        ]);
-        this.provider = provider;
-        //Attempt to load saved wallet from storage
-        this.loadEncryptedWallet();
-    }
-
     generateWallet() {
+        this.props.dispatch(walletLoadingAction());
+        //I think this might be what is blocking
         let disconnectedWallet = this.props.ethers.Wallet.createRandom(this.props.ethers.utils.randomBytes(128));
-        let wallet = disconnectedWallet.connect(this.provider);
+        let wallet = disconnectedWallet.connect(this.props.provider);
         this.props.dispatch(setWalletAction(wallet));
-
-        //provider.listAccounts().then(result => console.log(result));  //Not allowed on Infura
-        console.log(wallet.address);
-        console.log(wallet.mnemonic);
-        console.log(wallet.path);
+        this.props.dispatch(walletIdleAction());
         return wallet;
     }
 
+    //TODO: Move wallet functions to own file since code is repeated here and in Root
     loadEncryptedWallet() {
+        this.props.dispatch(statusLoadingAction());
         AsyncStorage.getItem('encryptedWallet').then((encryptedWallet) => {
             if (encryptedWallet && encryptedWallet !== null) {
-                console.log(`Encrypted Wallet: ${JSON.stringify(encryptedWallet)}`);
+                this.props.dispatch(statusReduxingAction());
+                //console.log(`Encrypted Wallet: ${JSON.stringify(encryptedWallet)}`);
                 this.props.dispatch(setEncryptedWalletAction(encryptedWallet));
+                this.props.dispatch(statusIdleAction());
 
+                //Must manually reconnect wallet to provider...
+                this.props.dispatch(walletLoadingAction());
                 this.props.ethers.Wallet.fromEncryptedJson(encryptedWallet, 'password').then((disconnectedWallet) => {
-                    let wallet = disconnectedWallet.connect(this.provider);
+                    let wallet = disconnectedWallet.connect(this.props.provider);
                     //console.log(wallet.provider);
                     this.props.dispatch(setWalletAction(wallet));
+                    this.props.dispatch(walletIdleAction());
                 });
             } else {
-                console.log('No encrypted wallet!');
+                console.error('Attempted to load wallet but none found.');
             }
         }).catch((err) => {
             console.error(err);
         });
     }
 
+    // This will update store.encryptedWallet, but not store.wallet ***
     saveEncryptedWallet(encryptedWallet) {
-        console.log('Saving Wallet...');
+        this.props.dispatch(statusSavingAction());
         AsyncStorage.setItem('encryptedWallet', encryptedWallet).then(() => {
-            console.log('Saved!');
+            this.props.dispatch(statusReduxingAction());
             this.props.dispatch(setEncryptedWalletAction(encryptedWallet));
-
-            this.props.ethers.Wallet.fromEncryptedJson(encryptedWallet, 'password').then((disconnectedWallet) => {
-                let wallet = disconnectedWallet.connect(this.provider);
-                //console.log(wallet.provider);
-                this.props.dispatch(setWalletAction(wallet));
-            });
+            this.props.dispatch(statusIdleAction());
+            //TODO: Double-check that saved ew == store.ew?
         }).catch((err) => {
             console.error(err);
         });
@@ -94,34 +93,38 @@ class Account extends Component<Props> {
 
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>External Account</Text>
-                {/*<Text style={styles.instructions}>{`Web3 Version: ${this.web3.version}`}</Text>*/}
-                {/*<Text style={styles.instructions}>{`Network: ${this.state.netId}`}</Text>*/}
-                {/*<Text style={styles.instructions}>{`Provider: ${this.web3.currentProvider.host}\n`}</Text>*/}
-                <Text style={styles.instructions}>{`Account:\t${
-                    this.props.wallet ?
-                        this.props.wallet.address :
-                        'No Account'}`
-                }</Text>
-                <Text style={styles.instructions}>{`Balance:\t${this.state.balance}`}</Text>
-                <Text style={styles.instructions}>{`Encrypted Wallet:\t${this.props.encryptedWallet}`}</Text>
-                {/*<Text style={styles.instructions}>{`Block #${this.state.latestBlockNumber}`}</Text>*/}
-                <Button onPress={() => {
-                    console.log('Generate');
-                    let wallet = this.generateWallet();
-                    wallet.encrypt('password').then((json) => {
-                        this.saveEncryptedWallet(json);
-                    });
-                }} title='Generate'/>
+            <View style={styles.outer}>
+                <Nav history={this.props.history}/>
+                <View style={styles.container}>
+                    <Text style={styles.welcome}>External Account</Text>
+                    <Text style={styles.instructions}>{`Wallet Status:\t${this.props.walletStatus}`}</Text>
+                    <Text style={styles.instructions}>{`Account:\t${
+                        this.props.wallet ?
+                            this.props.wallet.address :
+                            '--'}`
+                    }</Text>
+                    <Text style={styles.instructions}>{`Balance:\t${this.state.balance}`}</Text>
+                    <Text style={styles.instructions}>{`Storage Status:\t${this.props.status}`}</Text>
+                    <Text style={styles.instructions}>{`Encrypted Wallet:\t${this.props.encryptedWallet}`}</Text>
+                    <Button onPress={() => {
+                        let wallet = this.generateWallet();
+                        wallet.encrypt('password').then((json) => {
+                            this.saveEncryptedWallet(json);
+                        });
+                    }} title='Generate'/>
+                </View>
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    outer: {
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        backgroundColor: 'white',
+    },
     container: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
@@ -143,10 +146,14 @@ const mapStateToProps = (state) => {
     let {
         wallet,
         encryptedWallet,
+        status,
+        walletStatus,
     } = walletReducer;
     return {
         wallet,
         encryptedWallet,
+        status,
+        walletStatus,
     };
 };
 export default connect(
